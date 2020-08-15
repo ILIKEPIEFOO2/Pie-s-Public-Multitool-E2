@@ -1,0 +1,203 @@
+@name Pie’s Public Multi-Tool E2
+@persist Commands:table
+if( first() ){
+    Commands = table(
+        "Help Command" = "/help",
+        "Set Color" = "/setcolor",
+        "Set Material" = "/setmaterial",
+        "Set Angle" = "/setang",
+        "Set Position" = "/setpos",
+        "Get Kills" = "/frags",
+        "Get Deaths" = "/deaths",
+        "Get KD" = "/kd",
+        "Get TeamData" = "/team",
+        "Get Friends" = "/friends",
+        "Get Type" = "/type",
+        "Get Owner" = "/owner",
+        "Get Steam Info" = "/steam",
+        "Get Attachments" = "/attachments",
+        "Get Skin" = "/skin",
+        "Get SkinCount" = "/skincount",
+        "Get Model" = "/model",
+        "Get Material" = "/material",
+        "Get Bodygroup" = "/bodygroup",
+        "Get Bodygroups" = "/bodygroups",
+        "Key" = "command"
+    )
+    runOnChat(1)
+}
+if( chatClk( owner() ) ){
+    LS = lastSaid():explode( " " )
+    Speaker = lastSpoke()
+    Parameters = lastSaid():sub( LS[1,string]:length() + 2 )
+    switch( LS[1,string]:lower() ){
+        case Commands["Help Command",string],
+            printTable( Commands )
+        break
+        case Commands["Set Color",string],
+            local E = Speaker:aimEntity()
+            local Color = vec( LS[2,string]:toNumber(), LS[3,string]:toNumber(), LS[4,string]:toNumber() )
+            if( E ){
+                E:setColor( Color )
+            }
+        break
+        case Commands["Set Material",string],
+            local E = Speaker:aimEntity()
+            local Material = LS[2,string]
+            if( E ){
+                E:setMaterial( Material )
+            }
+        break
+        case Commands["Set Angle",string],
+            local E = Speaker:aimEntity()
+            local Angle = ang( LS[2,string]:toNumber(), LS[3,string]:toNumber(), LS[4,string]:toNumber() )
+            if( E ){
+                E:setAng(Angle)
+            }
+        break
+        case Commands["Set Position",string],
+            local E = Speaker:aimEntity()
+            local Vector = vec( LS[2,string]:toNumber(), LS[3,string]:toNumber(), LS[4,string]:toNumber() )
+            if( E ){
+                E:setPos(Vector)
+            }
+        break
+        case Commands["Get Kills",string],
+            if( Parameters:length() > 2 ){
+                Player = findPlayerByName( Parameters )
+                Player = Player ? Player : findPlayerBySteamID( Parameters )
+            }else{
+                Player = Speaker:aimEntity()
+            }
+            if( Player ){
+                print( Player:name() + " has " + Player:frags() + " kills." )
+            }
+        break
+        case Commands["Get Deaths",string],
+            if( Parameters:length() > 2 ){
+                Player = findPlayerByName( Parameters )
+                Player = Player ? Player : findPlayerBySteamID( Parameters )
+            }else{
+                Player = Speaker:aimEntity()
+            }
+            if( Player ){
+                print( Player:name() + " has " + Player:deaths() + " deaths." )
+            }
+        break
+        case Commands["Get KD",string],
+            if( Parameters:length() > 2 ){
+                Player = findPlayerByName( Parameters )
+                Player = Player ? Player : findPlayerBySteamID( Parameters )
+            }else{
+                Player = Speaker:aimEntity()
+            }
+            if( Player ){
+                print( Player:name() + " has " + Player:frags() + " kills to " + Player:deaths() + "deaths. " + round( Player:frags() / Player:deaths(), 2 ) * 100 + "% KD" )
+            }
+        break
+        case Commands["Get TeamData",string],
+            if( Parameters:length() > 2 ){
+                Player = findPlayerByName( Parameters )
+                Player = Player ? Player : findPlayerBySteamID( Parameters )
+            }else{
+                Player = Speaker:aimEntity()
+            }
+            if( Player ){
+                local Team = Player:team()
+                printTable( table(
+                    "Team" = Team,
+                    "Team Name" = teamName(Team),
+                    "Team Score" = teamScore(Team),
+                    "Team Players" = teamPlayers(Team),
+                    "Team Frags" = teamFrags(Team),
+                    "Team Deaths" = teamDeaths(Team),
+                    "Team Color" = teamColor(Team)
+                ))
+            }
+        break
+        case Commands["Get Friends",string],
+            if( Parameters:length() > 2 ){
+                Player = findPlayerByName( Parameters )
+                Player = Player ? Player : findPlayerBySteamID( Parameters )
+            }else{
+                Player = Speaker:aimEntity()
+            }
+            if( Player ){
+                printTable( Player:friends() )
+            }
+        break
+        case Commands["Get Type",string],
+            local E = Speaker:aimEntity()
+            if( E ){
+                print( E:type() )
+            }
+        break
+        case Commands["Get Owner",string],
+            local E = Speaker:aimEntity()
+            if( E ){
+                print( E:owner() )
+            }
+        break
+        case Commands["Get Steam Info",string],if( Parameters:length() > 2 ){
+                Player = findPlayerByName( Parameters )
+                Player = Player ? Player : findPlayerBySteamID( Parameters )
+            }else{
+                Player = Speaker:aimEntity()
+            }
+            if( Player ){
+                printTable( table(
+                    "Name" = Player:name(),
+                    "Steam ID" = Player:steamID(),
+                    "Steam ID 64" = Player:steamID64(),
+                    "Steam Friends" = Player:steamFriends(),
+                    "Steam Profile" = "https://www.steamcommunity.com/id/" + Player:steamId64() + "/"
+                ))
+            }
+        break
+        case Commands["Get Attachments",string],
+            local E = Speaker:aimEntity()
+            if( E ){
+                printTable( E:attachments() )
+            }
+        break
+        case Commands["Get Skin",string],
+            local E = Speaker:aimEntity()
+            if( E ){
+                print( E:type() + " ‘s Skin is: " + E:getSkin() )
+            }
+        break
+        case Commands["Get SkinCount",string],
+            local E = Speaker:aimEntity()
+            if( E ){
+                print( E:type() + " ‘s Skin Count is: " + E:getSkinCount() )
+            }
+        break
+        case Commands["Get Material",string],
+            local E = Speaker:aimEntity()
+            if( E ){
+                print( E:type() + " ‘s Material is: " + E:material() )
+            }
+        break
+        case Commands["Get Bodygroup",string],
+            local E = Speaker:aimEntity()
+            local ID = LS[2,string]:toNumber()
+            if( E ){
+                print( E:type() + "’s body group id " + ID + " is " + E:getBodygroup(ID) )
+            }
+        break
+        case Commands["Get Bodygroups",string],
+            local E = Speaker:aimEntity()
+            local ID = LS[2,string]:toNumber()
+            if( E ){
+                print( E:type() + "’s number of body groups in body group id " + ID + " is " + E:getBodygroups(ID) )
+            }
+        break
+        case Commands["Key",string],
+            #Handle Command
+            print("This is a placeholder Command")
+        break
+        default,
+            hint("Not a valid E2 Command", 1)
+        break
+    }
+}

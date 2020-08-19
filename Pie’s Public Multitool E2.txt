@@ -22,6 +22,7 @@ if( first() ){
         "Get Material" = "/material",
         "Get Bodygroup" = "/bodygroup",
         "Get Bodygroups" = "/bodygroups",
+        "Move Entity" = "/move",
         "Key" = "command"
     )
     runOnChat(1)
@@ -190,6 +191,13 @@ if( chatClk( owner() ) ){
             local ID = LS[2,string]:toNumber()
             if( E ){
                 print( E:type() + "’s number of body groups in body group id " + ID + " is " + E:getBodygroups(ID) )
+            }
+        break
+        case Commands["Move Entity",string],
+            local E = Speaker:aimeEntity()
+            local Vector = vec( LS[2,string]:toNumber(), LS[3,string]:toNumber(), LS[4,string]:toNumber() )
+            if( E ){
+                E:setPos( E:toWorld( Vector ) )
             }
         break
         case Commands["Key",string],
